@@ -1,0 +1,11 @@
+numpy
+gymnasium[atari, accept-rom-license]
+torch
+cython
+pyyaml
+moviepy
+imageio[ffmpeg]
+ocatari
+tensorboard
+opencv-python
+shimmy
