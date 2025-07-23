@@ -3,9 +3,6 @@ import copy
 
 import numpy as np
 
-from core.utils import str_to_arr
-
-
 class Game:
     def __init__(
         self, env, obs_shape, action_space_size: int, discount: float, config=None
@@ -159,17 +156,15 @@ class GameHistory:
         padding: bool
             True -> padding frames if (t + stack frames) are out of trajectory
         """
-        frames = ray.get(self.obs_history)[
+        objects = ray.get(self.obs_history)[
             i : i + self.stacked_observations + extra_len
         ]
         if padding:
-            pad_len = self.stacked_observations + extra_len - len(frames)
+            pad_len = self.stacked_observations + extra_len - len(objects)
             if pad_len > 0:
-                pad_frames = [frames[-1] for _ in range(pad_len)]
-                frames = np.concatenate((frames, pad_frames))
-        if self.config.cvt_string:
-            frames = [str_to_arr(obs, self.config.gray_scale) for obs in frames]
-        return frames
+                pad_objects = [objects[-1] for _ in range(pad_len)]
+                objects = np.concatenate((objects, pad_objects))
+        return objects
 
     def zero_obs(self):
         # return a zero frame
@@ -181,13 +176,11 @@ class GameHistory:
     def step_obs(self):
         # return an observation of correct format for model inference
         index = len(self.rewards)
-        frames = self.obs_history[index : index + self.stacked_observations]
-        if self.config.cvt_string:
-            frames = [str_to_arr(obs, self.config.gray_scale) for obs in frames]
-        return frames
+        objects = self.obs_history[index : index + self.stacked_observations]
+        return objects
 
     def get_targets(self, i):
-        # return the value/rewrad/policy targets at step i
+        # return the value/reward/policy targets at step i
         return self.target_values[i], self.target_rewards[i], self.target_policies[i]
 
     def game_over(self):

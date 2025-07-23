@@ -1,10 +1,12 @@
 import os
 import time
 import torch
+from typing import TYPE_CHECKING
 
 import numpy as np
 
-from core.game import Game
+if TYPE_CHECKING:
+    from components.environment.game import Game
 
 
 class DiscreteSupport(object):
@@ -296,7 +298,7 @@ class BaseConfig(object):
         video_callable=None,
         uid=None,
         test=False,
-    ) -> Game:
+    ) -> "Game":
         """returns a new instance of the game"""
         raise NotImplementedError
 

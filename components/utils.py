@@ -1,6 +1,6 @@
 import os
 import cv2
-import gym
+import gymnasium as gym
 import torch
 import random
 import shutil
