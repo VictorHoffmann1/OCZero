@@ -27,13 +27,13 @@ class ObjectCentricEncoderWrapper(gym.Wrapper):
 
     def __init__(
         self,
-        venv,
+        env,
         max_objects,
         speed_scale=10.0,
         use_rgb=False,
         use_category=False,
     ):
-        super().__init__(venv)
+        super().__init__(env)
         self.encoder = ObjectCentricEncoder(
             max_objects=max_objects,
             speed_scale=speed_scale,
@@ -48,32 +48,23 @@ class ObjectCentricEncoderWrapper(gym.Wrapper):
             low=-np.inf, high=np.inf, shape=self.obs_shape, dtype=np.float32
         )
 
-    def reset(self):
-        _ = self.venv.reset()
-        return self.encoder(self.venv)
+    def reset(self, seed=None, **kwargs):
+        _ = self.env.reset(seed=seed, **kwargs)
+        return self.encoder(self.env)
 
-    def step_wait(self):
-        images, rewards, terminated, infos = self.venv.step_wait()
-        encoded_obs = self.encoder(self.venv)
+    def step(self, action: int):
+        image, rewards, terminated, truncated, info = self.env.step(action)
+        done = terminated or truncated
+        encoded_obs = self.encoder(self.env)
 
-        # Process terminal observations in infos to match the encoded observation space
-        if isinstance(infos, list):
-            for i, info in enumerate(infos):
-                if "terminal_observation" in info:
-                    # The terminal observation should also be encoded to match our observation space
-                    # Since we can't encode a single terminal observation without the environment state,
-                    # we'll use the current encoded observation as a reasonable approximation
-                    info["terminal_observation"] = encoded_obs[i]
-                info["image"] = images[i]  # type: ignore[assignment]
-        elif isinstance(infos, dict):
-            if "terminal_observation" in infos:
-                # The terminal observation should also be encoded to match our observation space
-                # Since we can't encode a single terminal observation without the environment state,
-                # we'll use the current encoded observation as a reasonable approximation
-                infos["terminal_observation"] = encoded_obs
-            infos["image"] = images
+        if "terminal_observation" in info:
+            # The terminal observation should also be encoded to match our observation space
+            # Since we can't encode a single terminal observation without the environment state,
+            # we'll use the current encoded observation as a reasonable approximation
+            info["terminal_observation"] = encoded_obs
+            info["image"] = image
 
-        return encoded_obs, rewards, terminated, infos
+        return encoded_obs, rewards, done, info
 
 
 class StickyActionEnv(gym.Wrapper[np.ndarray, int, np.ndarray, int]):
@@ -359,7 +350,20 @@ class AtariWrapper(Game):
         return [_ for _ in range(self.env.action_space.n)]
 
     def get_max_episode_steps(self):
-        return self.env.get_max_episode_steps()
+        # Try different ways to get max episode steps
+        if hasattr(self.env, "get_max_episode_steps"):
+            return self.env.get_max_episode_steps()
+        elif hasattr(self.env, "_max_episode_steps"):
+            return self.env._max_episode_steps
+        else:
+            # Traverse the wrapper stack to find TimeLimit wrapper
+            env = self.env
+            while hasattr(env, "env"):
+                if hasattr(env, "_max_episode_steps"):
+                    return env._max_episode_steps
+                env = env.env
+            # Default fallback for Atari games if no limit is found
+            return 108000  # Default Atari episode length
 
     def step(self, action):
         observation, reward, done, info = self.env.step(action)

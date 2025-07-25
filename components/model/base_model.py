@@ -89,6 +89,7 @@ class BaseNet(nn.Module):
     def initial_inference(self, obs) -> NetworkOutput:
         num = obs.size(0)
 
+        # obtain the representation of the observation
         state = self.representation(obs)
         actor_logit, value = self.prediction(state)
 

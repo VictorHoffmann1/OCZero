@@ -16,6 +16,7 @@ from components.replay_buffer import ReplayBuffer
 from components.storage import SharedStorage, QueueStorage
 from components.selfplay_worker import DataWorker
 from components.reanalyze_worker import BatchWorker_GPU, BatchWorker_CPU
+from components.utils import prepare_observation_lst
 
 
 def consist_loss_func(f1, f2):
@@ -70,8 +71,12 @@ def update_weights(
     # obs_batch is the observation for hat s_t (predicted hidden states from dynamics function)
     # obs_target_batch is the observations for s_t (hidden states from representation function)
     # to save GPU memory usage, obs_batch_ori contains (stack + unroll steps) frames
-    obs_batch_ori = torch.from_numpy(obs_batch_ori).to(config.device)
-    obs_batch = obs_batch_ori[:, 0 : config.stacked_observations, :, :]
+    obs_batch_ori = torch.from_numpy(obs_batch_ori.copy()).to(config.device)
+    obs_batch = (
+        obs_batch_ori[:, 0 : config.stacked_observations, :, :]
+        if config.stacked_observations > 1
+        else obs_batch_ori[:, 0, :, :]
+    )
     obs_target_batch = obs_batch_ori[:, 1:, :, :]
 
     # do augmentations
@@ -80,14 +85,16 @@ def update_weights(
         obs_target_batch = config.transform(obs_target_batch)
 
     # use GPU tensor
-    action_batch = torch.from_numpy(action_batch).to(config.device).unsqueeze(-1).long()
-    mask_batch = torch.from_numpy(mask_batch).to(config.device).float()
-    target_value_prefix = (
-        torch.from_numpy(target_value_prefix).to(config.device).float()
+    action_batch = (
+        torch.from_numpy(action_batch.copy()).to(config.device).unsqueeze(-1).long()
     )
-    target_value = torch.from_numpy(target_value).to(config.device).float()
-    target_policy = torch.from_numpy(target_policy).to(config.device).float()
-    weights = torch.from_numpy(weights_lst).to(config.device).float()
+    mask_batch = torch.from_numpy(mask_batch.copy()).to(config.device).float()
+    target_value_prefix = (
+        torch.from_numpy(target_value_prefix.copy()).to(config.device).float()
+    )
+    target_value = torch.from_numpy(target_value.copy()).to(config.device).float()
+    target_policy = torch.from_numpy(target_policy.copy()).to(config.device).float()
+    weights = torch.from_numpy(weights_lst.copy()).to(config.device).float()
 
     batch_size = obs_batch.size(0)
     assert batch_size == config.batch_size == target_value_prefix.size(0)
@@ -118,7 +125,7 @@ def update_weights(
     target_value_phi = config.value_phi(transformed_target_value)
 
     if config.amp_type == "torch_amp":
-        with autocast():
+        with autocast(config.device):
             value, _, policy_logits, hidden_state, reward_hidden = (
                 model.initial_inference(obs_batch)
             )
@@ -158,7 +165,7 @@ def update_weights(
     # loss of the unrolled steps
     if config.amp_type == "torch_amp":
         # use torch amp
-        with autocast():
+        with autocast(config.device):
             for step_i in range(config.num_unroll_steps):
                 # unroll with the dynamics function
                 value, value_prefix, policy_logits, hidden_state, reward_hidden = (
@@ -173,8 +180,13 @@ def update_weights(
                 # consistency loss
                 if config.consistency_coeff > 0:
                     # obtain the oracle hidden states from representation function
-                    _, _, _, presentation_state, _ = model.initial_inference(
+                    obs_target_step_batch = (
                         obs_target_batch[:, beg_index:end_index, :, :]
+                        if config.stacked_observations > 1
+                        else obs_target_batch[:, beg_index, :, :]
+                    )
+                    _, _, _, presentation_state, _ = model.initial_inference(
+                        obs_target_step_batch
                     )
                     # no grad for the presentation_state branch
                     dynamic_proj = model.project(hidden_state, with_grad=True)
@@ -291,9 +303,14 @@ def update_weights(
 
             # consistency loss
             if config.consistency_coeff > 0:
+                obs_target_step_batch = (
+                    obs_target_batch[:, beg_index:end_index, :, :]
+                    if config.stacked_observations > 1
+                    else obs_target_batch[:, beg_index, :, :]
+                )
                 # obtain the oracle hidden states from representation function
                 _, _, _, presentation_state, _ = model.initial_inference(
-                    obs_target_batch[:, beg_index:end_index, :, :]
+                    obs_target_step_batch
                 )
                 # no grad for the presentation_state branch
                 dynamic_proj = model.project(hidden_state, with_grad=True)
@@ -407,7 +424,7 @@ def update_weights(
     # backward
     parameters = model.parameters()
     if config.amp_type == "torch_amp":
-        with autocast():
+        with autocast(config.device):
             total_loss = weighted_loss
             total_loss.register_hook(lambda grad: grad * gradient_scale)
     else:
@@ -551,124 +568,139 @@ def _train(
         logging for tensorboard
     """
     # ----------------------------------------------------------------------------------
-    model = model.to(config.device)
-    target_model = target_model.to(config.device)
+    try:
+        model = model.to(config.device)
+        target_model = target_model.to(config.device)
 
-    optimizer = optim.SGD(
-        model.parameters(),
-        lr=config.lr_init,
-        momentum=config.momentum,
-        weight_decay=config.weight_decay,
-    )
+        optimizer = optim.SGD(
+            model.parameters(),
+            lr=config.lr_init,
+            momentum=config.momentum,
+            weight_decay=config.weight_decay,
+        )
 
-    scaler = GradScaler()
+        scaler = GradScaler()
 
-    model.train()
-    target_model.eval()
-    # ----------------------------------------------------------------------------------
-    # Print configuration info
-    print("Training configuration:")
-    print(f"  - Required start_transitions: {config.start_transitions}")
-    print(f"  - CPU actors: {config.cpu_actor}")
-    print(f"  - GPU actors: {config.gpu_actor}")
-    print(f"  - Batch size: {config.batch_size}")
-    print(f"  - Device: {config.device}")
-    print("Starting workers and waiting for data collection...")
+        model.train()
+        target_model.eval()
+        # ----------------------------------------------------------------------------------
+        # Print configuration info
+        print("Training configuration:")
+        print(f"  - Required start_transitions: {config.start_transitions}")
+        print(f"  - CPU actors: {config.cpu_actor}")
+        print(f"  - GPU actors: {config.gpu_actor}")
+        print(f"  - Batch size: {config.batch_size}")
+        print(f"  - Device: {config.device}")
+        print("Starting workers and waiting for data collection...")
 
-    # set augmentation tools
-    if config.use_augmentation:
-        config.set_transforms()
+        # set augmentation tools
+        if config.use_augmentation:
+            config.set_transforms()
 
-    # wait until collecting enough data to start
-    print(f"Waiting for {config.start_transitions} transitions to start training...")
-    last_logged_count = 0
-    while not (
-        ray.get(replay_buffer.get_total_len.remote()) >= config.start_transitions
-    ):
-        current_count = ray.get(replay_buffer.get_total_len.remote())
-        if current_count != last_logged_count:
-            print(
-                f"Progress: {current_count}/{config.start_transitions} transitions collected ({current_count / config.start_transitions * 100:.1f}%)"
-            )
-            last_logged_count = current_count
-        time.sleep(1)
-        pass
-    print("Begin training...")
-    # set signals for other workers
-    shared_storage.set_start_signal.remote()
-    print("Start signal sent to workers. Beginning training loop...")
+        # wait until collecting enough data to start
+        print(
+            f"Waiting for {config.start_transitions} transitions to start training..."
+        )
+        last_logged_count = 0
+        while not (
+            ray.get(replay_buffer.get_total_len.remote()) >= config.start_transitions
+        ):
+            current_count = ray.get(replay_buffer.get_total_len.remote())
+            if current_count != last_logged_count:
+                print(
+                    f"Progress: {current_count}/{config.start_transitions} transitions collected ({current_count / config.start_transitions * 100:.1f}%)"
+                )
+                last_logged_count = current_count
+            time.sleep(1)
+            pass
+        print("Begin training...")
+        # set signals for other workers
+        shared_storage.set_start_signal.remote()
+        print("Start signal sent to workers. Beginning training loop...")
 
-    step_count = 0
-    # Note: the interval of the current model and the target model is between x and 2x. (x = target_model_interval)
-    # recent_weights is the param of the target model
-    recent_weights = model.get_weights()
+        step_count = 0
+        # Note: the interval of the current model and the target model is between x and 2x. (x = target_model_interval)
+        # recent_weights is the param of the target model
+        recent_weights = model.get_weights()
 
-    # while loop
-    while step_count < config.training_steps + config.last_steps:
-        # remove data if the replay buffer is full. (more data settings)
-        if step_count % 1000 == 0:
-            replay_buffer.remove_to_fit.remote()
+        # while loop
+        print("Starting training loop...")
+        while step_count < config.training_steps + config.last_steps:
+            # remove data if the replay buffer is full. (more data settings)
+            if step_count % 1000 == 0:
+                replay_buffer.remove_to_fit.remote()
 
-        # obtain a batch
-        batch = batch_storage.pop()
-        if batch is None:
-            time.sleep(0.3)
-            continue
-        shared_storage.incr_counter.remote()
-        lr = adjust_lr(config, optimizer, step_count)
+            # obtain a batch
+            batch = batch_storage.pop()
+            if batch is None:
+                time.sleep(0.3)
+                continue
+            else:
+                print(f"Obtained batch at step {step_count}.")
+            shared_storage.incr_counter.remote()
+            lr = adjust_lr(config, optimizer, step_count)
 
-        # update model for self-play
-        if step_count % config.checkpoint_interval == 0:
-            shared_storage.set_weights.remote(model.get_weights())
+            # update model for self-play
+            if step_count % config.checkpoint_interval == 0:
+                shared_storage.set_weights.remote(model.get_weights())
 
-        # update model for reanalyzing
-        if step_count % config.target_model_interval == 0:
-            shared_storage.set_target_weights.remote(recent_weights)
-            recent_weights = model.get_weights()
+            # update model for reanalyzing
+            if step_count % config.target_model_interval == 0:
+                shared_storage.set_target_weights.remote(recent_weights)
+                recent_weights = model.get_weights()
 
-        if step_count % config.vis_interval == 0:
-            vis_result = True
-        else:
-            vis_result = False
+            if step_count % config.vis_interval == 0:
+                vis_result = True
+            else:
+                vis_result = False
 
-        if config.amp_type == "torch_amp":
-            log_data = update_weights(
-                model, batch, optimizer, replay_buffer, config, scaler, vis_result
-            )
-            scaler = log_data[3]
-        else:
-            log_data = update_weights(
-                model, batch, optimizer, replay_buffer, config, scaler, vis_result
-            )
+            if config.amp_type == "torch_amp":
+                log_data = update_weights(
+                    model, batch, optimizer, replay_buffer, config, scaler, vis_result
+                )
+                scaler = log_data[3]
+            else:
+                log_data = update_weights(
+                    model, batch, optimizer, replay_buffer, config, scaler, vis_result
+                )
 
-        if step_count % config.log_interval == 0:
-            _log(
-                config,
-                step_count,
-                log_data[0:3],
-                model,
-                replay_buffer,
-                lr,
-                shared_storage,
-                summary_writer,
-                vis_result,
-            )
+            if step_count % config.log_interval == 0:
+                _log(
+                    config,
+                    step_count,
+                    log_data[0:3],
+                    model,
+                    replay_buffer,
+                    lr,
+                    shared_storage,
+                    summary_writer,
+                    vis_result,
+                )
 
-        # The queue is empty.
-        if step_count >= 100 and step_count % 50 == 0 and batch_storage.get_len() == 0:
-            print(
-                "Warning: Batch Queue is empty (Require more batch actors Or batch actor fails)."
-            )
+            # The queue is empty.
+            if (
+                step_count >= 100
+                and step_count % 50 == 0
+                and batch_storage.get_len() == 0
+            ):
+                print(
+                    "Warning: Batch Queue is empty (Require more batch actors Or batch actor fails)."
+                )
 
-        step_count += 1
+            step_count += 1
 
-        # save models
-        if step_count % config.save_ckpt_interval == 0:
-            model_path = os.path.join(config.model_dir, "model_{}.p".format(step_count))
-            torch.save(model.state_dict(), model_path)
+            # save models
+            if step_count % config.save_ckpt_interval == 0:
+                model_path = os.path.join(
+                    config.model_dir, "model_{}.p".format(step_count)
+                )
+                torch.save(model.state_dict(), model_path)
 
-    shared_storage.set_weights.remote(model.get_weights())
-    time.sleep(30)
+        shared_storage.set_weights.remote(model.get_weights())
+        time.sleep(30)
+    except Exception as e:
+        print(f"Exception during training: {e}")
+        raise e
     return model.get_weights()
 
 

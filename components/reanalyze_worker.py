@@ -77,7 +77,7 @@ class BatchWorker_CPU(object):
             # off-policy correction: shorter horizon of td steps
             delta_td = (total_transitions - idx) // config.auto_td_steps
             td_steps = config.td_steps - delta_td
-            td_steps = np.clip(td_steps, 1, 5).astype(np.int)
+            td_steps = np.clip(td_steps, 1, 5).astype(int)
 
             # prepare the corresponding observations for bootstrapped values o_{t+k}
             game_obs = game.obs(state_index + td_steps, config.num_unroll_steps)
@@ -324,7 +324,8 @@ class BatchWorker_CPU(object):
                         self.config.revisit_policy_search_rate,
                         weights=target_weights,
                     )
-                except Exception:
+                except Exception as e:
+                    print(f"Error in making batch: {e}")
                     print("Data is deleted...")
                     time.sleep(0.1)
 
@@ -382,14 +383,14 @@ class BatchWorker_GPU(object):
             value_obs_lst = prepare_observation_lst(value_obs_lst)
             # split a full batch into slices of mini_infer_size: to save the GPU memory for more GPU actors
             m_batch = self.config.mini_infer_size
-            slices = np.ceil(batch_size / m_batch).astype(np.int_)
+            slices = np.ceil(batch_size / m_batch).astype(int)
             network_output = []
             for i in range(slices):
                 beg_index = m_batch * i
                 end_index = m_batch * (i + 1)
                 m_obs = torch.from_numpy(value_obs_lst[beg_index:end_index]).to(device)
                 if self.config.amp_type == "torch_amp":
-                    with autocast():
+                    with autocast(device):
                         m_output = self.model.initial_inference(m_obs)
                 else:
                     m_output = self.model.initial_inference(m_obs)
@@ -515,7 +516,7 @@ class BatchWorker_GPU(object):
             policy_obs_lst = prepare_observation_lst(policy_obs_lst)
             # split a full batch into slices of mini_infer_size: to save the GPU memory for more GPU actors
             m_batch = self.config.mini_infer_size
-            slices = np.ceil(batch_size / m_batch).astype(np.int_)
+            slices = np.ceil(batch_size / m_batch).astype(int)
             network_output = []
             for i in range(slices):
                 beg_index = m_batch * i
@@ -523,7 +524,7 @@ class BatchWorker_GPU(object):
 
                 m_obs = torch.from_numpy(policy_obs_lst[beg_index:end_index]).to(device)
                 if self.config.amp_type == "torch_amp":
-                    with autocast():
+                    with autocast(device):
                         m_output = self.model.initial_inference(m_obs)
                 else:
                     m_output = self.model.initial_inference(m_obs)

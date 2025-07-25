@@ -93,111 +93,120 @@ def test(
     model.eval()
     save_path = os.path.join(config.exp_path, "recordings", "step_{}".format(counter))
 
-    with torch.no_grad():
-        # new games
-        envs = [
-            config.new_game(
-                seed=i,
-                save_video=save_video,
-                save_path=save_path,
-                test=True,
-                video_callable=lambda episode_id: True,
-                uid=i,
-            )
-            for i in range(test_episodes)
-        ]
-        max_episode_steps = envs[0].get_max_episode_steps()
-        if use_pb:
-            pb = tqdm(np.arange(max_episode_steps), leave=True)
-        # initializations
-        init_obses = [env.reset() for env in envs]
-        dones = np.array([False for _ in range(test_episodes)])
-        game_histories = [
-            GameHistory(
-                envs[_].env.action_space, max_length=max_episode_steps, config=config
-            )
-            for _ in range(test_episodes)
-        ]
-        for i in range(test_episodes):
-            game_histories[i].init(
-                [init_obses[i] for _ in range(config.stacked_observations)]
-            )
-
-        step = 0
-        ep_ori_rewards = np.zeros(test_episodes)
-        ep_clip_rewards = np.zeros(test_episodes)
-        # loop
-        while not dones.all():
-            if render:
-                raise NotImplementedError(
-                    "Rendering is not implemented in the test function."
+    try:
+        with torch.no_grad():
+            # new games
+            envs = [
+                config.new_game(
+                    seed=i,
+                    save_video=save_video,
+                    save_path=save_path,
+                    test=True,
+                    video_callable=lambda episode_id: True,
+                    uid=i,
                 )
-                for i in range(test_episodes):
-                    envs[i].render()
-
-            stack_obs = []
-            for game_history in game_histories:
-                stack_obs.append(game_history.step_obs())
-            stack_obs = prepare_observation_lst(stack_obs)
-            stack_obs = torch.from_numpy(stack_obs).to(device).float()
-
-            with autocast():
-                network_output = model.initial_inference(stack_obs.float())
-            hidden_state_roots = network_output.hidden_state
-            reward_hidden_roots = network_output.reward_hidden
-            value_prefix_pool = network_output.value_prefix
-            policy_logits_pool = network_output.policy_logits.tolist()
-
-            roots = cytree.Roots(
-                test_episodes, config.action_space_size, config.num_simulations
-            )
-            roots.prepare_no_noise(value_prefix_pool, policy_logits_pool)
-            # do MCTS for a policy (argmax in testing)
-            MCTS(config).search(roots, model, hidden_state_roots, reward_hidden_roots)
-
-            roots_distributions = roots.get_distributions()
-            roots_values = roots.get_values()
-            for i in range(test_episodes):
-                if dones[i]:
-                    continue
-
-                distributions, value, env = (
-                    roots_distributions[i],
-                    roots_values[i],
-                    envs[i],
-                )
-                # select the argmax, not sampling
-                action, _ = select_action(
-                    distributions, temperature=1, deterministic=True
-                )
-
-                obs, ori_reward, done, info = env.step(action)
-                if config.clip_reward:
-                    clip_reward = np.sign(ori_reward)
-                else:
-                    clip_reward = ori_reward
-
-                game_histories[i].store_search_stats(distributions, value)
-                game_histories[i].append(action, obs, clip_reward)
-
-                dones[i] = done
-                ep_ori_rewards[i] += ori_reward
-                ep_clip_rewards[i] += clip_reward
-
-            step += 1
+                for i in range(test_episodes)
+            ]
+            max_episode_steps = envs[0].get_max_episode_steps()
             if use_pb:
-                pb.set_description(
-                    "{} In step {}, scores: {}(max: {}, min: {}) currently.".format(
-                        config.env_name,
-                        counter,
-                        ep_ori_rewards.mean(),
-                        ep_ori_rewards.max(),
-                        ep_ori_rewards.min(),
-                    )
+                pb = tqdm(np.arange(max_episode_steps), leave=True)
+            # initializations
+            init_obses = [env.reset() for env in envs]
+            dones = np.array([False for _ in range(test_episodes)])
+            game_histories = [
+                GameHistory(
+                    envs[_].env.action_space,
+                    max_length=max_episode_steps,
+                    config=config,
                 )
-                pb.update(1)
+                for _ in range(test_episodes)
+            ]
+            for i in range(test_episodes):
+                game_histories[i].init(
+                    [init_obses[i] for _ in range(config.stacked_observations)]
+                )
 
-        for env in envs:
-            env.close()
+            step = 0
+            ep_ori_rewards = np.zeros(test_episodes)
+            ep_clip_rewards = np.zeros(test_episodes)
+            # loop
+            while not dones.all():
+                if render:
+                    raise NotImplementedError(
+                        "Rendering is not implemented in the test function."
+                    )
+                    for i in range(test_episodes):
+                        envs[i].render()
+
+                stack_obs = []
+                for game_history in game_histories:
+                    stack_obs.append(game_history.step_obs())
+                stack_obs = prepare_observation_lst(stack_obs)
+                stack_obs = torch.from_numpy(stack_obs).to(device).float()
+
+                with autocast(device):
+                    network_output = model.initial_inference(stack_obs.float())
+                hidden_state_roots = network_output.hidden_state
+                reward_hidden_roots = network_output.reward_hidden
+                value_prefix_pool = network_output.value_prefix
+                policy_logits_pool = network_output.policy_logits.tolist()
+
+                roots = cytree.Roots(
+                    test_episodes, config.action_space_size, config.num_simulations
+                )
+                roots.prepare_no_noise(value_prefix_pool, policy_logits_pool)
+                # do MCTS for a policy (argmax in testing)
+                MCTS(config).search(
+                    roots, model, hidden_state_roots, reward_hidden_roots
+                )
+
+                roots_distributions = roots.get_distributions()
+                roots_values = roots.get_values()
+                for i in range(test_episodes):
+                    if dones[i]:
+                        continue
+
+                    distributions, value, env = (
+                        roots_distributions[i],
+                        roots_values[i],
+                        envs[i],
+                    )
+                    # select the argmax, not sampling
+                    action, _ = select_action(
+                        distributions, temperature=1, deterministic=True
+                    )
+
+                    obs, ori_reward, done, info = env.step(action)
+                    if config.clip_reward:
+                        clip_reward = np.sign(ori_reward)
+                    else:
+                        clip_reward = ori_reward
+
+                    game_histories[i].store_search_stats(distributions, value)
+                    game_histories[i].append(action, obs, clip_reward)
+
+                    dones[i] = done
+                    ep_ori_rewards[i] += ori_reward
+                    ep_clip_rewards[i] += clip_reward
+
+                step += 1
+                if use_pb:
+                    pb.set_description(
+                        "{} In step {}, scores: {}(max: {}, min: {}) currently.".format(
+                            config.env_name,
+                            counter,
+                            ep_ori_rewards.mean(),
+                            ep_ori_rewards.max(),
+                            ep_ori_rewards.min(),
+                        )
+                    )
+                    pb.update(1)
+
+            for env in envs:
+                env.close()
+
+    except Exception as e:
+        print(f"Error during testing: {e}")
+        raise e
 
     return ep_ori_rewards, step, save_path

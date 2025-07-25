@@ -9,6 +9,7 @@ from components.environment.wrappers import (
     ObjectCentricEncoderWrapper,
 )
 from ocatari.core import OCAtari
+import time
 
 
 class AtariConfig(BaseConfig):
@@ -70,6 +71,9 @@ class AtariConfig(BaseConfig):
         self.discount **= self.frame_skip
         self.max_moves //= self.frame_skip
         self.test_max_moves //= self.frame_skip
+
+        # TODO: Add these params in config
+        self.max_objects = 32
 
         self.start_transitions = self.start_transitions * 1000 // self.frame_skip
         self.start_transitions = max(1, self.start_transitions)
@@ -159,14 +163,14 @@ class AtariConfig(BaseConfig):
         env = OCAtari(self.env_name, **env_kwargs)
         env = OCAtariWrapper(env, **wrapper_kwargs)
         env = ObjectCentricEncoderWrapper(
-            env, max_objects=32, speed_scale=8.0
+            env, max_objects=self.max_objects, speed_scale=8.0
         )  # TODO: Add these params in config
-        obs_shape = env.obs_shape
-
+        self.obs_shape = env.obs_shape
         if seed is not None:
-            env.seed(seed)
+            env.reset(seed=seed)
 
         if save_video:
+            print(f"Saving video to {save_path} with uid {uid}...")
             from gymnasium.wrappers import Monitor
 
             env = Monitor(
@@ -176,8 +180,7 @@ class AtariConfig(BaseConfig):
                 video_callable=video_callable,
                 uid=uid,
             )
-
-        return AtariWrapper(env, obs_shape=obs_shape, discount=self.discount)
+        return AtariWrapper(env, obs_shape=self.obs_shape, discount=self.discount)
 
     def scalar_reward_loss(self, prediction, target):
         return -(torch.log_softmax(prediction, dim=1) * target).sum(1)

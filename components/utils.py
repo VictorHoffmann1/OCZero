@@ -85,6 +85,7 @@ def select_action(visit_counts, temperature=1, deterministic=True):
     Parameters
     ----------
     temperature: float
+
         the temperature for the distribution
     deterministic: bool
         True -> select the argmax

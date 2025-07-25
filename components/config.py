@@ -59,7 +59,7 @@ class BaseConfig(object):
         clip_reward: bool = False,
         random_start: bool = True,
         frame_skip: int = 1,
-        stacked_observations: int = 4,
+        stacked_observations: int = 1,
         hidden_dim: int = 64,
         reward_dim: int = 64,
         top_k: int = 16,

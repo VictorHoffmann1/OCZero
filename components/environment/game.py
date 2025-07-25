@@ -3,6 +3,7 @@ import copy
 
 import numpy as np
 
+
 class Game:
     def __init__(
         self, env, obs_shape, action_space_size: int, discount: float, config=None
@@ -12,6 +13,9 @@ class Game:
         self.action_space_size = action_space_size
         self.discount = discount
         self.config = config
+        print(
+            f"Game initialized with action space size: {action_space_size}, discount: {discount}"
+        )
 
     def legal_actions(self):
         raise NotImplementedError
@@ -51,11 +55,7 @@ class GameHistory:
         self.stacked_observations = config.stacked_observations
         self.discount = config.discount
         self.action_space_size = config.action_space_size
-        self.zero_obs_shape = (
-            config.obs_shape[-2],
-            config.obs_shape[-1],
-            config.image_channel,
-        )
+        self.zero_obs_shape = config.obs_shape
 
         self.child_visits = []
         self.root_values = []
@@ -169,7 +169,7 @@ class GameHistory:
     def zero_obs(self):
         # return a zero frame
         return [
-            np.zeros(self.zero_obs_shape, dtype=np.uint8)
+            np.zeros(self.zero_obs_shape, dtype=np.float32)
             for _ in range(self.stacked_observations)
         ]
 

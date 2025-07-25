@@ -110,7 +110,6 @@ class DynamicsNetwork(nn.Module):
         """
         super().__init__()
         self.lstm_hidden_size = lstm_hidden_size
-
         self.action_embedding = nn.Linear(action_space_size, input_dim)
 
         self.next_hidden_state_predictor = nn.Sequential(
@@ -137,14 +136,11 @@ class DynamicsNetwork(nn.Module):
     def forward(self, x, action_one_hot, reward_hidden):
         # Add action embedding to the hidden states
         x = x + self.action_embedding(action_one_hot)  # (B, input_dim)
-
         # Predict next hidden state
         x = self.next_hidden_state_predictor(x)  # (B, input_dim)
         next_state = x
-
         # Reward and value prefix prediction
         x = self.reward_projector(x)  # (B, reward_dim)
-
         value_prefix, reward_hidden = self.lstm(x.unsqueeze(0), reward_hidden)
         value_prefix = value_prefix.squeeze(0)
         value_prefix = self.bn_value_prefix(value_prefix)
@@ -315,7 +311,8 @@ class EfficientZeroNet(BaseNet):
             reward_dim,
             fc_reward_layers,
             reward_support_size,
-            lstm_hidden_size,
+            action_space_size,
+            lstm_hidden_size=lstm_hidden_size,
             momentum=bn_mt,
             init_zero=self.init_zero,
         )
@@ -359,7 +356,7 @@ class EfficientZeroNet(BaseNet):
     def dynamics(self, encoded_state, reward_hidden, action):
         # Stack encoded_state with a game specific one hot encoded action
         action_one_hot = torch.nn.functional.one_hot(
-            action, num_classes=self.action_space_size
+            action.long().flatten(), num_classes=self.action_space_size
         ).float()  # (B, action_space_size)
         next_encoded_state, reward_hidden, value_prefix = self.dynamics_network(
             encoded_state, action_one_hot, reward_hidden
