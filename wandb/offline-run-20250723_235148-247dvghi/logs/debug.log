@@ -1,0 +1,24 @@
+2025-07-23 23:51:48,161 INFO    MainThread:16134 [wandb_setup.py:_flush():76] Configure stats pid to 16134
+2025-07-23 23:51:48,161 INFO    MainThread:16134 [wandb_setup.py:_flush():76] Loading settings from /home/victo/.config/wandb/settings
+2025-07-23 23:51:48,161 INFO    MainThread:16134 [wandb_setup.py:_flush():76] Loading settings from /home/victo/projects/EfficientZeroV2/wandb/settings
+2025-07-23 23:51:48,161 INFO    MainThread:16134 [wandb_setup.py:_flush():76] Loading settings from environment variables: {}
+2025-07-23 23:51:48,161 INFO    MainThread:16134 [wandb_setup.py:_flush():76] Applying setup settings: {'_disable_service': False}
+2025-07-23 23:51:48,161 INFO    MainThread:16134 [wandb_setup.py:_flush():76] Inferring run settings from compute environment: {'program_relpath': 'ez/train.py', 'program': 'ez/train.py'}
+2025-07-23 23:51:48,161 INFO    MainThread:16134 [wandb_setup.py:_flush():76] Applying login settings: {'mode': 'offline'}
+2025-07-23 23:51:48,161 INFO    MainThread:16134 [wandb_init.py:_log_setup():507] Logging user logs to /home/victo/projects/EfficientZeroV2/wandb/offline-run-20250723_235148-247dvghi/logs/debug.log
+2025-07-23 23:51:48,161 INFO    MainThread:16134 [wandb_init.py:_log_setup():508] Logging internal logs to /home/victo/projects/EfficientZeroV2/wandb/offline-run-20250723_235148-247dvghi/logs/debug-internal.log
+2025-07-23 23:51:48,162 INFO    MainThread:16134 [wandb_init.py:init():547] calling init triggers
+2025-07-23 23:51:48,162 INFO    MainThread:16134 [wandb_init.py:init():554] wandb.init called with sweep_config: {}
+config: {}
+2025-07-23 23:51:48,162 INFO    MainThread:16134 [wandb_init.py:init():595] starting backend
+2025-07-23 23:51:48,162 INFO    MainThread:16134 [wandb_init.py:init():599] setting up manager
+2025-07-23 23:51:48,164 INFO    MainThread:16134 [backend.py:_multiprocessing_setup():106] multiprocessing start_methods=fork,spawn,forkserver, using: spawn
+2025-07-23 23:51:48,168 INFO    MainThread:16134 [wandb_init.py:init():605] backend started and connected
+2025-07-23 23:51:48,170 INFO    MainThread:16134 [wandb_init.py:init():695] updated telemetry
+2025-07-23 23:51:48,182 INFO    MainThread:16134 [wandb_init.py:init():782] starting run threads in backend
+2025-07-23 23:51:48,254 INFO    MainThread:16134 [wandb_run.py:_console_start():2157] atexit reg
+2025-07-23 23:51:48,255 INFO    MainThread:16134 [wandb_run.py:_redirect():2012] redirect: SettingsConsole.WRAP_RAW
+2025-07-23 23:51:48,255 INFO    MainThread:16134 [wandb_run.py:_redirect():2077] Wrapping output streams.
+2025-07-23 23:51:48,255 INFO    MainThread:16134 [wandb_run.py:_redirect():2102] Redirects installed.
+2025-07-23 23:51:48,256 INFO    MainThread:16134 [wandb_init.py:init():824] run started, returning control to user process
+2025-07-23 23:52:45,703 WARNING MsgRouterThr:16134 [router.py:message_loop():77] message_loop has been closed

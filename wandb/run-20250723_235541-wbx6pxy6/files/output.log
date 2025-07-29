@@ -1,0 +1,234 @@
+[main process] Global storage server has been started from main process.
+[main process] Batch storage has been initialized.
+[main process] Replay buffer server has been started from main process.
+[Watchdog Server] Watchdog server initialized.
+[main process] Watchdog server has been started from main process.
+[Data worker] Start data worker 0 at process 18628.
+[main process] Data workers have all been launched.
+[Batch worker GPU] Starting batch worker GPU 0 at process 18628.
+[Batch worker GPU] Starting batch worker GPU 1 at process 18628.
+[Batch worker GPU] Starting batch worker GPU 2 at process 18628.
+[Batch worker GPU] Starting batch worker GPU 3 at process 18628.
+[Batch worker GPU] Starting batch worker GPU 4 at process 18628.
+[Batch worker GPU] Starting batch worker GPU 5 at process 18628.
+[Batch worker GPU] Starting batch worker GPU 6 at process 18628.
+[Batch worker GPU] Starting batch worker GPU 7 at process 18628.
+[main process] Batch workers have all been launched.
+[main process] torch version is 2.4.1+cu121, enabled torch_compile.
+[2025-07-23 23:55:42,534][Train][INFO] - config: {'root_dir': '.', 'exp_config': 'ez/config/exp/atari.yaml', 'tag': 'EZ-V2', 'debug': False, 'save_path': 'results/Atari/Asterix/EZ-V2-seed=0-2025-07-23 23:55:01/', 'agent_name': 'atari_agent', 'env': {'env': 'Atari', 'game': 'Asterix', 'base_seed': 0, 'n_skip': 4, 'n_stack': 4, 'max_episode_steps': 3000, 'gray_scale': False, 'image_based': True, 'clip_reward': True, 'obs_shape': [3, 96, 96], 'episodic': True, 'action_space_size': 9}, 'rl': {'discount': 0.988053892081, 'unroll_steps': 5, 'td_steps': 5, 'auto_td_steps': 30000, 'td_lambda': 0.95}, 'optimizer': {'type': 'SGD', 'lr': 0.2, 'lr_decay_type': 'none', 'lr_warm_up': 0.01, 'lr_decay_rate': 0.1, 'lr_decay_steps': 100000, 'weight_decay': 0.0001, 'momentum': 0.9}, 'priority': {'use_priority': True, 'priority_prob_alpha': 1.0, 'priority_prob_beta': 1.0, 'min_prior': 1e-06}, 'train': {'load_model_path': '', 'batch_size': 256, 'training_steps': 100000, 'offline_training_steps': 20000, 'start_transitions': 2000, 'eval_n_episode': 10, 'eval_interval': 10000, 'self_play_update_interval': 100, 'reanalyze_update_interval': 200, 'save_ckpt_interval': 10000, 'mini_batch_size': 256, 'reanalyze_ratio': 1.0, 'reward_loss_coeff': 1.0, 'value_loss_coeff': 0.5, 'policy_loss_coeff': 1.0, 'consistency_coeff': 5.0, 'decorrelation_coeff': 0.01, 'off_diag_coeff': 0.005, 'entropy_coeff': 0.005, 'max_grad_norm': 5, 'change_temperature': True, 'periodic_reset': False, 'value_reanalyze': False, 'path_consistency': False, 'use_decorrelation': False, 'value_policy_detach': False, 'optimal_Q': False, 'v_num': 1, 'value_target': 'mixed', 'use_IQL': False, 'IQL_weight': 0.7, 'start_use_mix_training_steps': 30000.0, 'mixed_value_threshold': 5000.0}, 'data': {'num_envs': 4, 'buffer_size': 1000000, 'total_transitions': 100000, 'top_transitions': 200000.0, 'trajectory_size': 400, 'save_video': False, 'save_as_dataset': False}, 'mcts': {'language': 'cython', 'num_simulations': 16, 'num_top_actions': 4, 'c_visit': 50, 'c_scale': 0.1, 'c_base': 19652, 'c_init': 1.25, 'dirichlet_alpha': 0.3, 'explore_frac': 0.25, 'value_minmax_delta': 0.01, 'vis': ['print'], 'mpc_horizon': 1, 'use_gumbel': True}, 'model': {'noisy_net': False, 'action_embedding': True, 'action_embedding_dim': 16, 'down_sample': True, 'state_norm': False, 'value_prefix': True, 'value_target': 'bootstrapped', 'GAE_max_steps': 15, 'init_zero': True, 'num_blocks': 1, 'num_channels': 64, 'reduced_channels': 16, 'projection_layers': [1024, 1024], 'prjection_head_layers': [256, 1024], 'fc_layers': [32], 'lstm_hidden_size': 512, 'lstm_horizon_len': 5, 'policy_loss_type': 'reanalyze', 'reward_support': {'range': [-300, 300], 'scale': 1, 'env': 'Atari', 'bins': 51, 'type': 'support', 'size': 601}, 'value_support': {'range': [-300, 300], 'scale': 1, 'env': 'Atari', 'bins': 51, 'type': 'support', 'size': 601}}, 'actors': {'data_worker': 1, 'batch_worker': 8}, 'wandb': {'project': 'ez-v2-release', 'tag': 'Atari'}, 'augmentation': ['shift', 'intensity'], 'ddp': {'world_size': 1, 'training_size': 1, 'address': '127.0.0.1'}, 'ray': {'single_process': False}, 'log': {'log_interval': 100, 'log_smos': False}, 'eval': {'verbose': 0, 'save_path': 'test', 'model_path': 'results/Atari/Breakout/EZ-V2-seed=0-2023-08-10 00:40:53/models/model_10000.p', 'model_path_new': 'results/Atari/Breakout/EZ-V2-seed=0-2023-08-10 00:40:53/models/model_80000.p', 'n_episodes': 10, 'compare_value': False, 'analysis_value': False}}
+[2025-07-23 23:55:42,535][Train][INFO] - save model in: results/Atari/Asterix/EZ-V2-seed=0-2025-07-23 23:55:01/models
+/home/victo/projects/EfficientZeroV2/ez/agents/base.py:126: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = GradScaler()
+[36m(pid=18742)[39m free(): double free detected in tcache 2
+[36m(pid=18742)[39m *** Aborted at 1753307745 (unix time) try "date -d @1753307745" if you are using GNU date ***
+[36m(pid=18742)[39m PC: @                0x0 (unknown)
+[36m(pid=18742)[39m *** SIGABRT (@0x3e800004936) received by PID 18742 (TID 0x7f54750b7b80) from PID 18742; stack trace: ***
+[36m(pid=18742)[39m     @     0x7f54751e7330 (unknown)
+[36m(pid=18742)[39m     @     0x7f5475240b2c pthread_kill
+[36m(pid=18742)[39m     @     0x7f54751e727e gsignal
+[36m(pid=18742)[39m     @     0x7f54751ca8ff abort
+[36m(pid=18742)[39m     @     0x7f54751cb7b6 (unknown)
+[36m(pid=18742)[39m     @     0x7f547524aff5 (unknown)
+[36m(pid=18742)[39m     @     0x7f547524d55f (unknown)
+[36m(pid=18742)[39m     @     0x7f547524fdae __libc_free
+[36m(pid=18742)[39m     @     0x7f525ff15e45 (unknown)
+[36m(pid=18742)[39m     @     0x7f525ff29889 (unknown)
+[36m(pid=18742)[39m     @     0x7f525fd53bcd (unknown)
+[36m(pid=18742)[39m     @     0x7f525fd54fc5 (unknown)
+[36m(pid=18742)[39m     @     0x7f525fd15264 (unknown)
+[36m(pid=18742)[39m     @     0x7f525fdae812 (unknown)
+[36m(pid=18742)[39m     @     0x7f525fd3a71b cuInit
+[36m(pid=18742)[39m     @     0x7f54604332e1 (unknown)
+[36m(pid=18742)[39m     @     0x7f5460436318 (unknown)
+[36m(pid=18742)[39m     @     0x7f5475243ed3 (unknown)
+[36m(pid=18742)[39m     @     0x7f54604786e9 (unknown)
+[36m(pid=18742)[39m     @     0x7f5460427a67 (unknown)
+[36m(pid=18742)[39m     @     0x7f5460449811 cudaGetDeviceCount
+[36m(pid=18742)[39m     @     0x7f546efa747a c10::cuda::device_count()
+[36m(pid=18742)[39m     @     0x7f53360ff9b3 THCPModule_getDeviceCount_wrap()
+[36m(pid=18742)[39m     @     0x7f54754a56fd cfunction_vectorcall_NOARGS
+[36m(pid=18742)[39m     @     0x7f5475435947 _PyEval_EvalFrameDefault
+[36m(pid=18742)[39m     @     0x7f547542d18b function_code_fastcall
+[36m(pid=18742)[39m     @     0x7f5475435947 _PyEval_EvalFrameDefault
+[36m(pid=18742)[39m     @     0x7f54755426e2 _PyEval_EvalCodeWithName
+[36m(pid=18742)[39m     @     0x7f5475542a5f PyEval_EvalCodeEx
+[36m(pid=18742)[39m     @     0x7f5475542a8f PyEval_EvalCode
+[36m(pid=18742)[39m     @     0x7f547553e63d builtin_exec
+[36m(pid=18742)[39m     @     0x7f54754a55e7 cfunction_vectorcall_FASTCALL
+[36m(pid=18752)
+[36m(pid=18762)
+[36m(pid=18750)
+[36m(pid=18748)
+[36m(pid=18753)
+[36m(pid=18756)
+[36m(pid=18744)
+[36m(pid=18751)
+[36m(pid=18760)
+[36m(pid=18775)
+[36m(pid=18752)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/wandb/analytics/sentry.py:82: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+[36m(pid=18752)[39m   self.hub = sentry_sdk.Hub(client)
+[36m(pid=18750)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/wandb/analytics/sentry.py:82: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+[36m(pid=18750)[39m   self.hub = sentry_sdk.Hub(client)
+[36m(pid=18762)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/wandb/analytics/sentry.py:82: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+[36m(pid=18762)[39m   self.hub = sentry_sdk.Hub(client)
+[36m(pid=18752)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+[36m(pid=18752)[39m   @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+[36m(pid=18748)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/wandb/analytics/sentry.py:82: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+[36m(pid=18748)[39m   self.hub = sentry_sdk.Hub(client)
+[36m(pid=18750)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+[36m(pid=18750)[39m   @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+[36m(pid=18753)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/wandb/analytics/sentry.py:82: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+[36m(pid=18753)[39m   self.hub = sentry_sdk.Hub(client)
+[36m(pid=18762)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+[36m(pid=18762)[39m   @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+[36m(pid=18756)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/wandb/analytics/sentry.py:82: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+[36m(pid=18756)[39m   self.hub = sentry_sdk.Hub(client)
+[36m(pid=18775)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/wandb/analytics/sentry.py:82: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+[36m(pid=18775)[39m   self.hub = sentry_sdk.Hub(client)
+[36m(pid=18748)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+[36m(pid=18748)[39m   @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+[36m(pid=18753)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+[36m(pid=18753)[39m   @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+[36m(pid=18744)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/wandb/analytics/sentry.py:82: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+[36m(pid=18744)[39m   self.hub = sentry_sdk.Hub(client)
+[36m(pid=18751)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/wandb/analytics/sentry.py:82: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+[36m(pid=18751)[39m   self.hub = sentry_sdk.Hub(client)
+[36m(pid=18760)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/wandb/analytics/sentry.py:82: SentryHubDeprecationWarning: `sentry_sdk.Hub` is deprecated and will be removed in a future major release. Please consult our 1.x to 2.x migration guide for details on how to migrate `Hub` usage to the new API: https://docs.sentry.io/platforms/python/migration/1.x-to-2.x
+[36m(pid=18760)[39m   self.hub = sentry_sdk.Hub(client)
+[36m(pid=18756)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+[36m(pid=18756)[39m   @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+[36m(pid=18760)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+[36m(pid=18760)[39m   @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+[36m(pid=18775)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+[36m(pid=18775)[39m   @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+[36m(pid=18744)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+[36m(pid=18744)[39m   @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+[36m(pid=18751)[39m /home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/kornia/feature/lightglue.py:44: FutureWarning: `torch.cuda.amp.custom_fwd(args...)` is deprecated. Please use `torch.amp.custom_fwd(args..., device_type='cuda')` instead.
+[36m(pid=18751)[39m   @torch.cuda.amp.custom_fwd(cast_inputs=torch.float32)
+[36m(pid=18762)[39m A.L.E: Arcade Learning Environment (version 0.7.5+db37282)
+[36m(pid=18762)[39m [Powered by Stella]
+2025-07-23 23:56:07,772	WARNING worker.py:1072 -- A worker died or was killed while executing task ffffffffffffffffdf5a1a8201000000.
+[36m(pid=18752)[39m E0723 23:56:07.762216 18752 19071 task_manager.cc:323] Task failed: IOError: cancelling all pending tasks of dead actor: Type=ACTOR_TASK, Language=PYTHON, Resources: {CPU: 1, }, function_descriptor={type=PythonFunctionDescriptor, module_name=ez.data.global_storage, class_name=GlobalStorage, function_name=get_start_signal, function_hash=}, task_id=09f28c4e1b9c4adddf5a1a8201000000, task_name=GlobalStorage.get_start_signal(), job_id=01000000, num_args=0, num_returns=2, actor_task_spec={actor_id=df5a1a8201000000, actor_caller_id=ffffffffffffffff62223d8501000000, actor_counter=0}
+[36m(pid=18762)[39m E0723 23:56:07.760263 18762 19049 task_manager.cc:323] Task failed: IOError: cancelling all pending tasks of dead actor: Type=ACTOR_TASK, Language=PYTHON, Resources: {CPU: 1, }, function_descriptor={type=PythonFunctionDescriptor, module_name=ez.data.global_storage, class_name=GlobalStorage, function_name=get_counter, function_hash=}, task_id=657918c9f8742103df5a1a8201000000, task_name=GlobalStorage.get_counter(), job_id=01000000, num_args=0, num_returns=2, actor_task_spec={actor_id=df5a1a8201000000, actor_caller_id=ffffffffffffffff88866c7d01000000, actor_counter=0}
+[36m(pid=18750)[39m E0723 23:56:07.762427 18750 18903 task_manager.cc:323] Task failed: IOError: cancelling all pending tasks of dead actor: Type=ACTOR_TASK, Language=PYTHON, Resources: {CPU: 1, }, function_descriptor={type=PythonFunctionDescriptor, module_name=ez.data.global_storage, class_name=GlobalStorage, function_name=get_start_signal, function_hash=}, task_id=27e78df685bf8a06df5a1a8201000000, task_name=GlobalStorage.get_start_signal(), job_id=01000000, num_args=0, num_returns=2, actor_task_spec={actor_id=df5a1a8201000000, actor_caller_id=ffffffffffffffff3bf0c85601000000, actor_counter=0}
+[36m(pid=18753)[39m E0723 23:56:07.762138 18753 18882 task_manager.cc:323] Task failed: IOError: cancelling all pending tasks of dead actor: Type=ACTOR_TASK, Language=PYTHON, Resources: {CPU: 1, }, function_descriptor={type=PythonFunctionDescriptor, module_name=ez.data.global_storage, class_name=GlobalStorage, function_name=get_start_signal, function_hash=}, task_id=26f55681c94537e6df5a1a8201000000, task_name=GlobalStorage.get_start_signal(), job_id=01000000, num_args=0, num_returns=2, actor_task_spec={actor_id=df5a1a8201000000, actor_caller_id=ffffffffffffffffb7603b6c01000000, actor_counter=0}
+[36m(pid=18748)[39m E0723 23:56:07.762266 18748 19051 task_manager.cc:323] Task failed: IOError: cancelling all pending tasks of dead actor: Type=ACTOR_TASK, Language=PYTHON, Resources: {CPU: 1, }, function_descriptor={type=PythonFunctionDescriptor, module_name=ez.data.global_storage, class_name=GlobalStorage, function_name=get_start_signal, function_hash=}, task_id=1385f55c48e7b7e8df5a1a8201000000, task_name=GlobalStorage.get_start_signal(), job_id=01000000, num_args=0, num_returns=2, actor_task_spec={actor_id=df5a1a8201000000, actor_caller_id=ffffffffffffffff7f10737001000000, actor_counter=0}
+[36m(pid=18775)[39m E0723 23:56:07.762694 18775 19116 task_manager.cc:323] Task failed: IOError: cancelling all pending tasks of dead actor: Type=ACTOR_TASK, Language=PYTHON, Resources: {CPU: 1, }, function_descriptor={type=PythonFunctionDescriptor, module_name=ez.data.global_storage, class_name=GlobalStorage, function_name=get_counter, function_hash=}, task_id=bcf9a7e900c193ffdf5a1a8201000000, task_name=GlobalStorage.get_counter(), job_id=01000000, num_args=0, num_returns=2, actor_task_spec={actor_id=df5a1a8201000000, actor_caller_id=ffffffffffffffffaf23404c01000000, actor_counter=0}
+[36m(pid=18760)[39m E0723 23:56:07.762385 18760 18959 task_manager.cc:323] Task failed: IOError: cancelling all pending tasks of dead actor: Type=ACTOR_TASK, Language=PYTHON, Resources: {CPU: 1, }, function_descriptor={type=PythonFunctionDescriptor, module_name=ez.data.global_storage, class_name=GlobalStorage, function_name=get_start_signal, function_hash=}, task_id=26f1713de4226c6bdf5a1a8201000000, task_name=GlobalStorage.get_start_signal(), job_id=01000000, num_args=0, num_returns=2, actor_task_spec={actor_id=df5a1a8201000000, actor_caller_id=ffffffffffffffffbe3cb80901000000, actor_counter=0}
+[36m(pid=18756)[39m E0723 23:56:07.762535 18756 18965 task_manager.cc:323] Task failed: IOError: cancelling all pending tasks of dead actor: Type=ACTOR_TASK, Language=PYTHON, Resources: {CPU: 1, }, function_descriptor={type=PythonFunctionDescriptor, module_name=ez.data.global_storage, class_name=GlobalStorage, function_name=get_start_signal, function_hash=}, task_id=2945324192bae672df5a1a8201000000, task_name=GlobalStorage.get_start_signal(), job_id=01000000, num_args=0, num_returns=2, actor_task_spec={actor_id=df5a1a8201000000, actor_caller_id=ffffffffffffffffae935fc001000000, actor_counter=0}
+[36m(pid=18751)[39m E0723 23:56:07.762264 18751 18929 task_manager.cc:323] Task failed: IOError: cancelling all pending tasks of dead actor: Type=ACTOR_TASK, Language=PYTHON, Resources: {CPU: 1, }, function_descriptor={type=PythonFunctionDescriptor, module_name=ez.data.global_storage, class_name=GlobalStorage, function_name=get_start_signal, function_hash=}, task_id=6093983afc747722df5a1a8201000000, task_name=GlobalStorage.get_start_signal(), job_id=01000000, num_args=0, num_returns=2, actor_task_spec={actor_id=df5a1a8201000000, actor_caller_id=ffffffffffffffff84b65a9401000000, actor_counter=0}
+[36m(pid=18744)[39m E0723 23:56:07.762228 18744 18884 task_manager.cc:323] Task failed: IOError: cancelling all pending tasks of dead actor: Type=ACTOR_TASK, Language=PYTHON, Resources: {CPU: 1, }, function_descriptor={type=PythonFunctionDescriptor, module_name=ez.data.global_storage, class_name=GlobalStorage, function_name=get_start_signal, function_hash=}, task_id=6aae35c4ce6ca32ddf5a1a8201000000, task_name=GlobalStorage.get_start_signal(), job_id=01000000, num_args=0, num_returns=2, actor_task_spec={actor_id=df5a1a8201000000, actor_caller_id=ffffffffffffffffa628090a01000000, actor_counter=0}
+2025-07-23 23:56:12,841	ERROR worker.py:1018 -- Possible unhandled error from worker: [36mray::EvalWorker.run()[39m (pid=18775, ip=172.24.247.44)
+  File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 438, in ray._raylet.execute_task.function_executor
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/eval_worker.py", line 35, in run
+    counter = ray.get(self.storage.get_counter.remote())
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+2025-07-23 23:56:12,841	ERROR worker.py:1018 -- Possible unhandled error from worker: [36mray::BatchWorker.run()[39m (pid=18748, ip=172.24.247.44)
+  File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 438, in ray._raylet.execute_task.function_executor
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/batch_worker.py", line 107, in run
+    while not ray.get(self.storage.get_start_signal.remote()):
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+2025-07-23 23:56:12,841	ERROR worker.py:1018 -- Possible unhandled error from worker: [36mray::BatchWorker.run()[39m (pid=18752, ip=172.24.247.44)
+  File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 438, in ray._raylet.execute_task.function_executor
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/batch_worker.py", line 107, in run
+    while not ray.get(self.storage.get_start_signal.remote()):
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+2025-07-23 23:56:12,842	ERROR worker.py:1018 -- Possible unhandled error from worker: [36mray::DataWorker.run()[39m (pid=18762, ip=172.24.247.44)
+  File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 438, in ray._raylet.execute_task.function_executor
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/torch/utils/_contextlib.py", line 116, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/data_worker.py", line 75, in run
+    trained_steps = ray.get(self.storage.get_counter.remote())
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+2025-07-23 23:56:12,842	ERROR worker.py:1018 -- Possible unhandled error from worker: [36mray::BatchWorker.run()[39m (pid=18760, ip=172.24.247.44)
+  File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 438, in ray._raylet.execute_task.function_executor
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/batch_worker.py", line 107, in run
+    while not ray.get(self.storage.get_start_signal.remote()):
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+2025-07-23 23:56:13,842	ERROR worker.py:1018 -- Possible unhandled error from worker: [36mray::BatchWorker.run()[39m (pid=18751, ip=172.24.247.44)
+  File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 438, in ray._raylet.execute_task.function_executor
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/batch_worker.py", line 107, in run
+    while not ray.get(self.storage.get_start_signal.remote()):
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+2025-07-23 23:56:13,843	ERROR worker.py:1018 -- Possible unhandled error from worker: [36mray::BatchWorker.run()[39m (pid=18756, ip=172.24.247.44)
+  File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 438, in ray._raylet.execute_task.function_executor
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/batch_worker.py", line 107, in run
+    while not ray.get(self.storage.get_start_signal.remote()):
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+2025-07-23 23:56:13,843	ERROR worker.py:1018 -- Possible unhandled error from worker: [36mray::BatchWorker.run()[39m (pid=18753, ip=172.24.247.44)
+  File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 438, in ray._raylet.execute_task.function_executor
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/batch_worker.py", line 107, in run
+    while not ray.get(self.storage.get_start_signal.remote()):
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+2025-07-23 23:56:13,843	ERROR worker.py:1018 -- Possible unhandled error from worker: [36mray::BatchWorker.run()[39m (pid=18750, ip=172.24.247.44)
+  File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 438, in ray._raylet.execute_task.function_executor
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/batch_worker.py", line 107, in run
+    while not ray.get(self.storage.get_start_signal.remote()):
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+2025-07-23 23:56:13,843	ERROR worker.py:1018 -- Possible unhandled error from worker: [36mray::BatchWorker.run()[39m (pid=18744, ip=172.24.247.44)
+  File "python/ray/_raylet.pyx", line 484, in ray._raylet.execute_task
+  File "python/ray/_raylet.pyx", line 438, in ray._raylet.execute_task.function_executor
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/batch_worker.py", line 107, in run
+    while not ray.get(self.storage.get_start_signal.remote()):
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+Traceback (most recent call last):
+  File "ez/train.py", line 157, in <module>
+    main()
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/hydra.py", line 119, in run
+    ret = run_job(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "ez/train.py", line 49, in main
+    start_ddp_trainer(0, config)
+  File "ez/train.py", line 89, in start_ddp_trainer
+    final_weights = train(rank, agent, manager, logger, config)
+  File "ez/train.py", line 112, in train
+    final_weights, final_model = agent.train(
+  File "/home/victo/projects/EfficientZeroV2/ez/agents/base.py", line 130, in train
+    time.sleep(1)
+KeyboardInterrupt
+Traceback (most recent call last):
+  File "ez/train.py", line 157, in <module>
+    main()
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/hydra.py", line 119, in run
+    ret = run_job(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "ez/train.py", line 49, in main
+    start_ddp_trainer(0, config)
+  File "ez/train.py", line 89, in start_ddp_trainer
+    final_weights = train(rank, agent, manager, logger, config)
+  File "ez/train.py", line 112, in train
+    final_weights, final_model = agent.train(
+  File "/home/victo/projects/EfficientZeroV2/ez/agents/base.py", line 130, in train
+    time.sleep(1)
+KeyboardInterrupt

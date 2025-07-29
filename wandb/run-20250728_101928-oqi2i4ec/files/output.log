@@ -1,0 +1,98 @@
+[main process] Global storage server has been started from main process.
+[main process] Batch storage has been initialized.
+[main process] Replay buffer server has been started from main process.
+[Watchdog Server] Watchdog server initialized.
+[main process] Watchdog server has been started from main process.
+[Data worker] Start data worker 0 at process 8590.
+[main process] Data workers have all been launched.
+[Batch worker GPU] Starting batch worker GPU 0 at process 8590.
+[Batch worker GPU] Starting batch worker GPU 1 at process 8590.
+[Batch worker GPU] Starting batch worker GPU 2 at process 8590.
+[Batch worker GPU] Starting batch worker GPU 3 at process 8590.
+[Batch worker GPU] Starting batch worker GPU 4 at process 8590.
+[Batch worker GPU] Starting batch worker GPU 5 at process 8590.
+[Batch worker GPU] Starting batch worker GPU 6 at process 8590.
+[Batch worker GPU] Starting batch worker GPU 7 at process 8590.
+[main process] Batch workers have all been launched.
+[main process] torch version is 2.7.1+cu126, enabled torch_compile.
+Error in training: Please implement the update_augmentation_transform method in your agent.
+[main process] master worker failed
+Error executing job with overrides: ['exp_config=components/config/exp/atari.yaml']
+Traceback (most recent call last):
+  File "/home/victo/projects/EfficientZeroV2/components/train.py", line 111, in train
+    final_weights, final_model = agent.train(
+  File "/home/victo/projects/EfficientZeroV2/components/agents/base.py", line 77, in train
+    self.update_augmentation_transform()
+  File "/home/victo/projects/EfficientZeroV2/components/agents/base.py", line 807, in update_augmentation_transform
+    raise NotImplementedError(
+NotImplementedError: Please implement the update_augmentation_transform method in your agent.
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/home/victo/projects/EfficientZeroV2/components/train.py", line 164, in <module>
+    main()
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/home/victo/projects/EfficientZeroV2/components/train.py", line 49, in main
+    start_ddp_trainer(0, config)
+  File "/home/victo/projects/EfficientZeroV2/components/train.py", line 87, in start_ddp_trainer
+    final_weights = train(rank, agent, manager, logger, config)
+  File "/home/victo/projects/EfficientZeroV2/components/train.py", line 157, in train
+    join_workers(workers, server_lst)
+  File "/home/victo/projects/EfficientZeroV2/components/worker/__init__.py", line 92, in join_workers
+    data_worker.join()
+AttributeError: 'NoneType' object has no attribute 'join'
+Traceback (most recent call last):
+  File "/home/victo/projects/EfficientZeroV2/components/train.py", line 111, in train
+    final_weights, final_model = agent.train(
+  File "/home/victo/projects/EfficientZeroV2/components/agents/base.py", line 77, in train
+    self.update_augmentation_transform()
+  File "/home/victo/projects/EfficientZeroV2/components/agents/base.py", line 807, in update_augmentation_transform
+    raise NotImplementedError(
+NotImplementedError: Please implement the update_augmentation_transform method in your agent.
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/home/victo/projects/EfficientZeroV2/components/train.py", line 164, in <module>
+    main()
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/home/victo/.pyenv/versions/oc_atari_rl/lib/python3.9/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "/home/victo/projects/EfficientZeroV2/components/train.py", line 49, in main
+    start_ddp_trainer(0, config)
+  File "/home/victo/projects/EfficientZeroV2/components/train.py", line 87, in start_ddp_trainer
+    final_weights = train(rank, agent, manager, logger, config)
+  File "/home/victo/projects/EfficientZeroV2/components/train.py", line 157, in train
+    join_workers(workers, server_lst)
+  File "/home/victo/projects/EfficientZeroV2/components/worker/__init__.py", line 92, in join_workers
+    data_worker.join()
+AttributeError: 'NoneType' object has no attribute 'join'

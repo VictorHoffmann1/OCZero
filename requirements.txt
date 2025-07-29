@@ -1,11 +1,18 @@
-numpy
-gymnasium[atari, accept-rom-license]
-torch
+numpy>=1.21.0
+gym==0.22.0
+gym[atari]==0.22.0
+gym[accept-rom-license]==0.22.0
 cython
-pyyaml
-moviepy
-imageio[ffmpeg]
-ocatari
-tensorboard
+PyOpenGL-accelerate
+hydra-core
+protobuf==3.20.1
+wandb==0.14.2
+dm_control
 opencv-python
-shimmy
+kornia
+imageio==2.31.5
+imageio[ffmpeg]
+imageio[pyav]
+ray==1.0.0
+torchrl
+git+https://gitclone.com/github.com/denisyarats/dmc2gym.git

@@ -1,0 +1,125 @@
+[main process] Initializing Global storage server...
+[main process] Failed to start Global storage server: Key 'prjection_head_layers' is not in struct
+    full_key: model.prjection_head_layers
+    object_type=dict
+Error executing job with overrides: ['exp_config=ez/config/exp/atari.yaml']
+Traceback (most recent call last):
+  File "ez/train.py", line 157, in <module>
+    main()
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "ez/train.py", line 49, in main
+    start_ddp_trainer(0, config)
+  File "ez/train.py", line 89, in start_ddp_trainer
+    final_weights = train(rank, agent, manager, logger, config)
+  File "ez/train.py", line 104, in train
+    workers, server_lst = start_workers(agent, manager, config)
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/__init__.py", line 39, in start_workers
+    raise e    # batch queue
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/__init__.py", line 35, in start_workers
+    storage_server = GlobalStorage.remote(agent.build_model(), agent.build_model(), agent.build_model())
+  File "/home/victo/projects/EfficientZeroV2/ez/agents/ez_atari.py", line 114, in build_model
+    head_layers = self.config.model.prjection_head_layers
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/dictconfig.py", line 359, in __getattr__
+    self._format_and_raise(key=key, value=None, cause=e)
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/base.py", line 231, in _format_and_raise
+    format_and_raise(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/_utils.py", line 819, in format_and_raise
+    _raise(ex, cause)
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/_utils.py", line 797, in _raise
+    raise ex.with_traceback(sys.exc_info()[2])  # set env var OC_CAUSE=1 for full trace
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/dictconfig.py", line 351, in __getattr__
+    return self._get_impl(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/dictconfig.py", line 442, in _get_impl
+    node = self._get_child(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/basecontainer.py", line 73, in _get_child
+    child = self._get_node(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/dictconfig.py", line 475, in _get_node
+    self._validate_get(key)
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/dictconfig.py", line 164, in _validate_get
+    self._format_and_raise(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/base.py", line 231, in _format_and_raise
+    format_and_raise(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/_utils.py", line 899, in format_and_raise
+    _raise(ex, cause)
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/_utils.py", line 797, in _raise
+    raise ex.with_traceback(sys.exc_info()[2])  # set env var OC_CAUSE=1 for full trace
+omegaconf.errors.ConfigAttributeError: Key 'prjection_head_layers' is not in struct
+    full_key: model.prjection_head_layers
+    object_type=dict
+Traceback (most recent call last):
+  File "ez/train.py", line 157, in <module>
+    main()
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+  File "ez/train.py", line 49, in main
+    start_ddp_trainer(0, config)
+  File "ez/train.py", line 89, in start_ddp_trainer
+    final_weights = train(rank, agent, manager, logger, config)
+  File "ez/train.py", line 104, in train
+    workers, server_lst = start_workers(agent, manager, config)
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/__init__.py", line 39, in start_workers
+    raise e    # batch queue
+  File "/home/victo/projects/EfficientZeroV2/ez/worker/__init__.py", line 35, in start_workers
+    storage_server = GlobalStorage.remote(agent.build_model(), agent.build_model(), agent.build_model())
+  File "/home/victo/projects/EfficientZeroV2/ez/agents/ez_atari.py", line 114, in build_model
+    head_layers = self.config.model.prjection_head_layers
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/dictconfig.py", line 359, in __getattr__
+    self._format_and_raise(key=key, value=None, cause=e)
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/base.py", line 231, in _format_and_raise
+    format_and_raise(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/_utils.py", line 819, in format_and_raise
+    _raise(ex, cause)
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/_utils.py", line 797, in _raise
+    raise ex.with_traceback(sys.exc_info()[2])  # set env var OC_CAUSE=1 for full trace
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/dictconfig.py", line 351, in __getattr__
+    return self._get_impl(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/dictconfig.py", line 442, in _get_impl
+    node = self._get_child(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/basecontainer.py", line 73, in _get_child
+    child = self._get_node(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/dictconfig.py", line 475, in _get_node
+    self._validate_get(key)
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/dictconfig.py", line 164, in _validate_get
+    self._format_and_raise(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/base.py", line 231, in _format_and_raise
+    format_and_raise(
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/_utils.py", line 899, in format_and_raise
+    _raise(ex, cause)
+  File "/home/victo/.pyenv/versions/efficient_zero_v2/lib/python3.8/site-packages/omegaconf/_utils.py", line 797, in _raise
+    raise ex.with_traceback(sys.exc_info()[2])  # set env var OC_CAUSE=1 for full trace
+omegaconf.errors.ConfigAttributeError: Key 'prjection_head_layers' is not in struct
+    full_key: model.prjection_head_layers
+    object_type=dict

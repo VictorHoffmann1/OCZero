@@ -1,94 +1,142 @@
-# EfficientZero (NeurIPS 2021)
-Open-source codebase for EfficientZero, from ["Mastering Atari Games with Limited Data"](https://arxiv.org/abs/2111.00210) at NeurIPS 2021.
 
-## Environments
-EfficientZero requires python3 (>=3.6) and pytorch (>=1.8.0) with the development headers. 
 
-We recommend to use torch amp (`--amp_type torch_amp`) to accelerate training.
+# EfficientZero V2: Mastering Discrete and Continuous Control with Limited Data
 
-### Prerequisites
-Before starting training, you need to build the c++/cython style external packages. (GCC version 7.5+ is required.)
+<a href="https://arxiv.org/abs/2403.00564"><strong>Project Page</strong></a>
+  |
+  <a href="https://arxiv.org/abs/2403.00564"><strong>arXiv</strong></a>
+  |
+  <a href="https://twitter.com/gao_young/status/1765680141869699534"><strong>Twitter</strong></a> 
+
+  <a href="https://shengjiewang-jason.github.io/">Shengjie Wang*</a>, 
+  <a href="https://liushaohuai5.github.io/">Shaohuai Liu*</a>, 
+  <a href="https://yewr.github.io/">Weirui Ye*</a>, 
+  <a href="https://github.com/YouJiacheng">Jiacheng You</a>, 
+  <a href="https://people.iiis.tsinghua.edu.cn/~gaoyang/yang-gao.weebly.com/index.html">Yang Gao</a>
+
+**International Conference on Machine Learning (ICML) 2024, Spotlight**
+
+
+<div align="center">
+  <img src="media/imgs/EZ_V2.png" alt="ezv2" width="80%">
+</div>
+
+**EfficientZero V2** is a general framework designed for sample-efficient RL algorithms. We have expanded the performance of EfficientZero to multiple domains, encompassing both contin- uous and discrete actions, as well as visual and low-dimensional inputs. 
+
+EfficientZero V2 outperforms the current state-of-the-art (SOTA) by a significant margin in diverse tasks under the limited data setting. EfficientZero V2 exhibits a notable ad- vancement over the prevailing general algorithm, DreamerV3, achieving superior outcomes in **50** of **66** evaluated tasks across diverse benchmarks, such as Atari 100k, Proprio Control, and Vision Control.
+
+
+## 🎉 News
+- [2024-05-30] We have released the code for EfficientZero V2. 
+
+## 💻 Installation
+
+See [INSTALL.md](INSTALL.md) for installation instructions. 
+
+
+
+## 🛠️ Running Experiments
+
+Then, you can run the following command to start training:
+
+```bash
+#!/bin/bash
+
+export OMP_NUM_THREADS=1
+export CUDA_VISIBLE_DEVICES=0,1
+export HYDRA_FULL_ERROR=1
+
+# # Port for DDP
+# export MASTER_PORT='12300'
+
+# Atari
+python ez/train.py exp_config=ez/config/exp/atari.yaml 
+# DMC state
+python ez/train.py exp_config=ez/config/exp/dmc_state.yaml
+# DMC image
+python ez/train.py exp_config=ez/config/exp/dmc_image.yaml
 ```
-cd core/ctree
-bash make.sh
-``` 
-The distributed framework of this codebase is built on [ray](https://docs.ray.io/en/releases-1.0.0/auto_examples/overview.html).
 
-### Installation
-As for other packages required for this codebase, please run `pip install -r requirements.txt`.
+### More Details
+<details>
+We define the configuration of each domain in `ez/config/exp/{domain}.yaml`. By now, we support the domains like `atari`, `dmc_state` and `dmc_image`.
+In the config file, you can modify the relevant content for your experiment, such as `game`, `training_steps` and `total_transitions`. 
 
-## Usage
-### Quick start
-* Train: `python main.py --env BreakoutNoFrameskip-v4 --case atari --opr train --amp_type torch_amp --num_gpus 1 --num_cpus 10 --cpu_actor 1 --gpu_actor 1 --force`
-* Test: `python main.py --env BreakoutNoFrameskip-v4 --case atari --opr test --amp_type torch_amp --num_gpus 1 --load_model --model_path model.p \`
-### Bash file
-We provide `train.sh` and `test.sh` for training and evaluation.
-* Train: 
-  * With 4 GPUs (3090): `bash train.sh`
-* Test: `bash test.sh`
+Note that if you modify the variable `total_transitions`, you should modify the variables `buffer_size` together. The training time will decrease if you reduce the `training_steps` variable. Basically, when the `training_steps` variable should be equal to `total_transitions`, the performance is sufficient.
 
-|Required Arguments | Description|
-|:-------------|:-------------|
-| `--env`                             |Name of the environment|
-| `--case {atari}`                    |It's used for switching between different domains(default: atari)|
-| `--opr {train,test}`                |select the operation to be performed|
-| `--amp_type {torch_amp,none}`       |use torch amp for acceleration|
+#### NOTE: The released branch is mainly tested on the DM Control benchmark. However, the performance in some Atari environments does not match the results in the paper. We are still working on resolving this discrepancy.
+</details>
 
-|Other Arguments | Description|
-|:-------------|:-------------|
-| `--force`                           |will rewrite the result directory
-| `--num_gpus 4`                      |how many GPUs are available
-| `--num_cpus 96`                     |how many CPUs are available
-| `--cpu_actor 14`                    |how many cpu workers
-| `--gpu_actor 20`                    |how many gpu workers
-| `--seed 0`                          |the seed
-| `--use_priority`                    |use priority in replay buffer sampling
-| `--use_max_priority`                |use the max priority for the newly collectted data
-| `--amp_type 'torch_amp'`            |use torch amp for acceleration
-| `--info 'EZ-V0'`                    |some tags for you experiments
-| `--p_mcts_num 8`                    |set the parallel number of envs in self-play 
-| `--revisit_policy_search_rate 0.99` |set the rate of reanalyzing policies
-| `--use_root_value`                  |use root values in value targets (require more GPU actors)
-| `--render`                          |render in evaluation
-| `--save_video`                      |save videos for evaluation
- 
-## Architecture Designs
-The architecture of the training pipeline is shown as follows:
-![](static/imgs/archi.png)
+## Running Third-Party Experiments
 
-### Some suggestions
-* To use a smaller model, you can choose smaller dim of the projection layers (Eg: 256/64) and the LSTM hidden layer (Eg: 64) in the config. 
-* For GPUs with 10G memory instead of 20G memory, you can allocate 0.25 gpu for each GPU maker (`@ray.remote(num_gpus=0.25)`) in `core/reanalyze_worker.py`.
+1. Add a configuration file in `config/exp/your_env.yaml` and define `agent_name`, etc.
 
-### New environment registration
-If you wan to apply EfficientZero to a new environment like `mujoco`. Here are the steps for registration:
-1. Follow the directory `config/atari` and create dir for the env at `config/mujoco`.
-2. Implement your `MujocoConfig(BaseConfig)` class and implement the models as well as your environment wrapper.
-3. Register the case at `main.py`.
+2. Implement your own agent in the `agents` directory (you can directly inherit from `base.Agent`).
 
-## Results 
-Evaluation with 32 seeds for 3 different runs (different seeds).
-![](static/imgs/total_results.png)
+3. Refer to the provided agent implementations for image/state, discrete/continuous setups to implement your own agent accordingly.
 
-## Citation
-If you find this repo useful, please cite our paper:
+4. Run the following command:
+   ```bash
+   python ez/train.py exp_config=ez/config/exp/your_env.yaml
+   ```
+
+## Evaluation
+Run `bash eval.sh`. You can modify the relevant content for evaluation in `config/config.yaml`.
+
+## Experiments Results
+EfficientZero V2 outperforms or be comparible to SoTA baselines in multiple domains. The results can be found in `media\img` folder.
+
+**Atari 100k**
+
+<details>
+
+<div align="center">
+  <img src="media/imgs/atari_app.png" alt="atari_100k" width="80%">
+</div>
+
+</details>
+
+
+**DMC State**
+
+<details>
+
+<div align="center">
+  <img src="media/imgs/dmc_proprio_app.png" alt="DMC State" width="80%">
+</div>
+
+</details>
+
+
+**DMC Image**
+
+<details>
+
+<div align="center">
+  <img src="media/imgs/dmc_vision_app.png" alt="DMC Image" width="80%">
+</div>
+
+</details>
+
+
+
+## 🏷️ License
+This repository is released under the GPL license. See [LICENSE](LICENSE) for additional details.
+
+## 😺 Acknowledgement
+Our code is generally built upon: [EfficientZero](https://github.com/YeWR/EfficientZero). 
+We thank all these authors for their nicely open sourced code and their great contributions to the community.
+
+Contact [Shengjie Wang](https://shengjiewang-jason.github.io/), [Shaohuai Liu](https://liushaohuai5.github.io/) and [Weirui Ye](https://yewr.github.io/) if you have any questions or suggestions.
+
+## 📝 Citation
+
+If you find our work useful, please consider citing:
 ```
-@inproceedings{ye2021mastering,
-  title={Mastering Atari Games with Limited Data},
-  author={Weirui Ye, and Shaohuai Liu, and Thanard Kurutach, and Pieter Abbeel, and Yang Gao},
-  booktitle={NeurIPS},
-  year={2021}
+@article{wang2024efficientzero,
+  title={EfficientZero V2: Mastering Discrete and Continuous Control with Limited Data},
+  author={Wang, Shengjie and Liu, Shaohuai and Ye, Weirui and You, Jiacheng and Gao, Yang},
+  journal={arXiv preprint arXiv:2403.00564},
+  year={2024}
 }
 ```
-
-## Contact
-If you have any question or want to use the code, please contact ywr20@mails.tsinghua.edu.cn .
-
-## Acknowledgement
-We appreciate the following github repos a lot for their valuable code base implementations:
-
-https://github.com/koulanurag/muzero-pytorch
-
-https://github.com/werner-duvaud/muzero-general
-
-https://github.com/pytorch/ELF
