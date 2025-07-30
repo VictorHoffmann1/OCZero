@@ -57,7 +57,6 @@ class RepresentationNetwork(nn.Module):
         top_k=64,
     ):
         """Representation network"""
-
         super().__init__()
         self.relational_net = RelationalNetwork(input_dim, hidden_dim, top_k)
 
@@ -74,6 +73,7 @@ class DynamicsNetwork(nn.Module):
         input_dim,
         action_space_size,
         hidden_dim,
+        feature_dim=6,
         is_continuous=False,
     ):
         """
@@ -85,10 +85,10 @@ class DynamicsNetwork(nn.Module):
 
         self.action_embedding = nn.Linear(action_space_size, input_dim)
 
-        self.next_hidden_state_predictor = nn.Sequential(
-            nn.Linear(input_dim, hidden_dim),
+        self.next_object_state_predictor = nn.Sequential(
+            nn.Linear(feature_dim + action_space_size, hidden_dim),
             nn.ReLU(inplace=True),
-            nn.Linear(hidden_dim, input_dim),
+            nn.Linear(hidden_dim, feature_dim),
         )
 
     def forward(self, state, action):

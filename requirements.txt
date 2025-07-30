@@ -13,6 +13,6 @@ kornia
 imageio==2.31.5
 imageio[ffmpeg]
 imageio[pyav]
-ray==1.0.0
+ray
 torchrl
 git+https://gitclone.com/github.com/denisyarats/dmc2gym.git
